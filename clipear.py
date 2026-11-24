@@ -904,7 +904,8 @@ def main() -> None:
     info(f"Video: {video.name}  ({hms(dur)}, {alto}p)")
     if 0 < alto < 1080:
         aviso(f"El video está en {alto}p: los clips van a salir borrosos (sobre todo la cámara). "
-              f"Si es la descarga automática, borrá {video} y volvé a correr el comando para bajarlo en 1080p.")
+              "Si Kick no tiene una calidad mejor (fijate con: yt-dlp -F <link>), lo ideal es grabar "
+              "en OBS mientras transmitís y usar esa grabación con --archivo.")
 
     if args.probar_layout is not None:
         probar_layout(video, args.probar_layout, cfg, trabajo, salida)
