@@ -844,11 +844,11 @@ def probar_layout(video: Path, seg: float, cfg: dict, trabajo: Path, carpeta: Pa
     cam = cfg["facecam"]
     out = carpeta / "layout_original.png"
     gw, gh, gx, gy = recorte_contenido(cfg, 1080 / 960)
-    correr(["ffmpeg", "-y", "-v", "error", "-ss", str(seg), "-i", str(video.resolve()), "-frames:v", "1",
+    correr(["ffmpeg", "-y", "-v", "error", "-ss", str(seg), "-i", str(video.resolve()), "-frames:v", "1", "-update", "1",
             "-vf", f"scale={W}:{H},drawbox=x={cam['x']}:y={cam['y']}:w={cam['w']}:h={cam['h']}:color=red:t=6,"
                    f"drawbox=x={gx}:y={gy}:w={gw}:h={gh}:color=lime:t=6", str(out.resolve())])
     for f in FORMATOS:
-        correr(["ffmpeg", "-y", "-v", "error", "-ss", str(seg), "-i", str(video.resolve()), "-frames:v", "1",
+        correr(["ffmpeg", "-y", "-v", "error", "-ss", str(seg), "-i", str(video.resolve()), "-frames:v", "1", "-update", "1",
                 "-filter_complex", filtro_video(f, cfg, None, None), "-map", "[v]",
                 str((carpeta / f"layout_{f}.png").resolve())], cwd=trabajo)
     info(f"Capturas en {carpeta}: layout_original.png (rojo = facecam, verde = recorte del contenido en split) "
