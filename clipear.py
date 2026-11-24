@@ -228,7 +228,12 @@ def transcribir(wav: Path, trabajo: Path, modelo: str) -> list[dict]:
         m = WhisperModel(modelo, device="auto", compute_type="auto")
     except Exception:
         m = WhisperModel(modelo, device="cpu", compute_type="int8")
-    segs_iter, inf = m.transcribe(str(wav), language="es", word_timestamps=True, vad_filter=True,
+    # le paso el audio ya leído (no la ruta) para no depender de la librería 'av',
+    # que según la versión instalada rompe con "unexpected keyword argument 'metadata_errors'"
+    import numpy as np
+    with wave.open(str(wav), "rb") as w:
+        audio = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16).astype(np.float32) / 32768.0
+    segs_iter, inf = m.transcribe(audio, language="es", word_timestamps=True, vad_filter=True,
                                   vad_parameters={"min_silence_duration_ms": 500})
     total = inf.duration or 1
     segs, t0, ultimo = [], time.time(), -1
