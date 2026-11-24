@@ -66,6 +66,15 @@ def correr(cmd: list[str], **kw) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, **kw)
 
 
+def alto_video(ruta: Path) -> int:
+    r = correr(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=height",
+                "-of", "default=nw=1:nk=1", str(ruta)], capture_output=True, text=True)
+    try:
+        return int(r.stdout.strip().splitlines()[0])
+    except (ValueError, IndexError):
+        return 0
+
+
 def duracion_video(ruta: Path) -> float:
     r = correr(["ffprobe", "-v", "error", "-show_entries", "format=duration",
                 "-of", "default=nw=1:nk=1", str(ruta)], capture_output=True, text=True)
@@ -134,7 +143,9 @@ def descargar_vod(url: str, trabajo: Path) -> Path | None:
         return existentes[0]
     info("Descargando el VOD con yt-dlp (puede tardar)…")
     cmd = comando_ytdlp() + [
-        "-f", "bv*[height<=1080]+ba/b[height<=1080]/bv*+ba/b",
+        # -S res:1080 = la mejor calidad hasta 1080p (con [height<=1080] Kick caía a 480p
+        # porque sus formatos a veces no traen el alto informado)
+        "-f", "bv*+ba/b", "-S", "res:1080,fps",
         "--merge-output-format", "mp4", "-N", "8",
         "-o", str(trabajo / "video.%(ext)s"), url,
     ]
@@ -889,7 +900,11 @@ def main() -> None:
     else:
         video = descargar_vod(args.url, trabajo) or pedir_archivo_local()
     dur = duracion_video(video)
-    info(f"Video: {video.name}  ({hms(dur)})")
+    alto = alto_video(video)
+    info(f"Video: {video.name}  ({hms(dur)}, {alto}p)")
+    if 0 < alto < 1080:
+        aviso(f"El video está en {alto}p: los clips van a salir borrosos (sobre todo la cámara). "
+              f"Si es la descarga automática, borrá {video} y volvé a correr el comando para bajarlo en 1080p.")
 
     if args.probar_layout is not None:
         probar_layout(video, args.probar_layout, cfg, trabajo, salida)
