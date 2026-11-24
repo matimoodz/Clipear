@@ -1,0 +1,28 @@
+{
+  "resolucion_stream": [1920, 1080],
+
+  "facecam": { "x": 1019, "y": 57, "w": 901, "h": 507 },
+
+  "contenido": { "x": 0, "y": 0, "w": 1920, "h": 1080, "evitar_facecam": true },
+
+  "pip": { "ancho": 420, "esquina": "arriba-izquierda", "margen_x": 40, "margen_y": 150, "borde": 5 },
+
+  "subtitulos": {
+    "fuente": "Montserrat ExtraBold",
+    "tamano": 96,
+    "color": "#FFFFFF",
+    "resaltado": "#FFE500",
+    "borde_color": "#000000",
+    "borde": 7,
+    "palabras_por_grupo": 3,
+    "mayusculas": true,
+    "y_split": 960,
+    "y_full": 1300,
+    "y_cam": 1380
+  },
+
+  "pesos": { "volumen": 0.4, "chat": 0.4, "texto": 0.2 },
+  "chat_retraso_seg": 6,
+
+  "hashtags_base": ["#kick", "#streamer", "#clips", "#parati", "#fyp"]
+}

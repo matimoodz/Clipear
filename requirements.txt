@@ -1,0 +1,6 @@
+faster-whisper>=1.0
+numpy
+requests
+yt-dlp
+# opcional: ayuda a que la API de chat de Kick no bloquee
+curl_cffi
